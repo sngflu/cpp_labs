@@ -1,8 +1,6 @@
-// Защита от двойного включения заголовочного файла
 #ifndef SPARSEVECTOR_H
 #define SPARSEVECTOR_H
 
-// Подключение стандартных библиотек
 #include <unordered_map> // Для использования std::unordered_map
 #include <iostream>      // Для использования std::cout и std::endl
 #include <cmath>         // Для использования std::pow
@@ -159,5 +157,4 @@ public:
     }
 };
 
-// Конец защиты от двойного включения
 #endif

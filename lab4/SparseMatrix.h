@@ -1,8 +1,6 @@
-// Защита от двойного включения заголовочного файла
 #ifndef SPARSEMATRIX_H
 #define SPARSEMATRIX_H
 
-// Подключение стандартных библиотек
 #include <unordered_map> // Для использования std::unordered_map
 #include <utility>       // Для использования std::pair
 #include <iostream>      // Для использования std::cout и std::endl
@@ -339,5 +337,4 @@ public:
     }
 };
 
-// Конец защиты от двойного включения
 #endif

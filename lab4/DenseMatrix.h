@@ -1,8 +1,6 @@
-// Защита от двойного включения заголовочного файла
 #ifndef DENSEMATRIX_H
 #define DENSEMATRIX_H
 
-// Подключение стандартных библиотек
 #include <vector>    // Для использования std::vector
 #include <iostream>  // Для использования std::cout и std::endl
 #include <cmath>     // Для использования std::abs и std::pow
@@ -369,5 +367,4 @@ public:
     }
 };
 
-// Конец защиты от двойного включения
 #endif
