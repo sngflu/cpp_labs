@@ -1,30 +1,41 @@
+// Защита от двойного включения заголовочного файла
 #ifndef DENSEMATRIX_H
 #define DENSEMATRIX_H
 
-#include <vector>
-#include <iostream>
-#include <cmath>
-#include <algorithm>
+// Подключение стандартных библиотек
+#include <vector>    // Для использования std::vector
+#include <iostream>  // Для использования std::cout и std::endl
+#include <cmath>     // Для использования std::abs и std::pow
+#include <algorithm> // Для использования std::max и std::swap
 
+// Определение шаблонного класса DenseMatrix
 template <typename T>
 class DenseMatrix
 {
 private:
+    // Вектор векторов для хранения элементов матрицы
     std::vector<std::vector<T>> elements;
+    // Количество строк в матрице
     size_t rows;
+    // Количество столбцов в матрице
     size_t cols;
 
 public:
     // Конструкторы
-    DenseMatrix(size_t rows = 0, size_t cols = 0) : rows(rows), cols(cols), elements(rows, std::vector<T>(cols, T(0))) {}
+
+    // Конструктор по умолчанию, инициализирует матрицу нулями
+    DenseMatrix(size_t rows = 0, size_t cols = 0)
+        : rows(rows), cols(cols), elements(rows, std::vector<T>(cols, T(0))) {}
+
+    // Конструктор копирования
     DenseMatrix(const DenseMatrix &other) = default;
 
-    // Установка элемента
+    // Установка элемента матрицы
     void set(size_t row, size_t col, T value)
     {
+        // Если индексы выходят за пределы текущих размеров матрицы, расширяем матрицу
         if (row >= rows || col >= cols)
         {
-            // Расширяем матрицу при необходимости
             if (row >= rows)
             {
                 elements.resize(row + 1, std::vector<T>(cols, T(0)));
@@ -39,25 +50,31 @@ public:
                 cols = col + 1;
             }
         }
+        // Устанавливаем значение элемента
         elements[row][col] = value;
     }
 
-    // Получение элемента
+    // Получение элемента матрицы
     T get(size_t row, size_t col) const
     {
+        // Если индексы выходят за пределы текущих размеров матрицы, возвращаем 0
         if (row >= rows || col >= cols)
         {
             return T(0);
         }
+        // Возвращаем значение элемента
         return elements[row][col];
     }
 
-    // Перегрузка оператора +
+    // Перегрузка оператора + для сложения матриц
     DenseMatrix operator+(const DenseMatrix &other) const
     {
+        // Определяем максимальные размеры результирующей матрицы
         size_t maxRows = std::max(rows, other.rows);
         size_t maxCols = std::max(cols, other.cols);
         DenseMatrix result(maxRows, maxCols);
+
+        // Сложение элементов матриц
         for (size_t i = 0; i < maxRows; ++i)
         {
             for (size_t j = 0; j < maxCols; ++j)
@@ -70,12 +87,15 @@ public:
         return result;
     }
 
-    // Перегрузка оператора -
+    // Перегрузка оператора - для вычитания матриц
     DenseMatrix operator-(const DenseMatrix &other) const
     {
+        // Определяем максимальные размеры результирующей матрицы
         size_t maxRows = std::max(rows, other.rows);
         size_t maxCols = std::max(cols, other.cols);
         DenseMatrix result(maxRows, maxCols);
+
+        // Вычитание элементов матриц
         for (size_t i = 0; i < maxRows; ++i)
         {
             for (size_t j = 0; j < maxCols; ++j)
@@ -91,6 +111,7 @@ public:
     // Транспонирование матрицы
     DenseMatrix transpose() const
     {
+        // Создаем результирующую матрицу с транспонированными размерами
         DenseMatrix result(cols, rows);
         for (size_t i = 0; i < rows; ++i)
         {
@@ -105,11 +126,14 @@ public:
     // Умножение матриц
     DenseMatrix operator*(const DenseMatrix &other) const
     {
+        // Проверка на совместимость размеров матриц для умножения
         if (cols != other.rows)
         {
             throw std::invalid_argument("Некорректные размеры матриц для умножения.");
         }
         DenseMatrix result(rows, other.cols);
+
+        // Умножение матриц
         for (size_t i = 0; i < rows; ++i)
         {
             for (size_t k = 0; k < cols; ++k)
@@ -129,11 +153,14 @@ public:
     // Умножение матрицы на вектор
     std::vector<T> multiplyWithVector(const std::vector<T> &vec) const
     {
+        // Проверка на совместимость размеров матрицы и вектора
         if (cols != vec.size())
         {
             throw std::invalid_argument("Некорректные размеры для умножения матрицы на вектор.");
         }
         std::vector<T> result(rows, T(0));
+
+        // Умножение матрицы на вектор
         for (size_t i = 0; i < rows; ++i)
         {
             for (size_t j = 0; j < cols; ++j)
@@ -189,6 +216,7 @@ public:
     // Обращение матрицы (только для квадратных матриц)
     DenseMatrix inverse() const
     {
+        // Проверка на квадратность матрицы
         if (rows != cols)
         {
             throw std::invalid_argument("Обращение возможно только для квадратных матриц.");
@@ -266,9 +294,10 @@ public:
         return inverseMatrix;
     }
 
-    // Возведение матрицы в целую степень
+    // Возведение матрицы степень
     DenseMatrix pow(int exponent) const
     {
+        // Проверка на квадратность матрицы
         if (rows != cols)
         {
             throw std::invalid_argument("Возведение в степень возможно только для квадратных матриц.");
@@ -297,8 +326,6 @@ public:
         return result;
     }
 
-    // Возведение матрицы в вещественную степень (не реализовано)
-
     // Вывод матрицы
     void print() const
     {
@@ -312,7 +339,7 @@ public:
         }
     }
 
-    // Получение всех элементов (для итерации)
+    // Получение всех элементов для итерирования
     const std::vector<std::vector<T>> &getElements() const
     {
         return elements;
@@ -342,4 +369,5 @@ public:
     }
 };
 
+// Конец защиты от двойного включения
 #endif

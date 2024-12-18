@@ -44,7 +44,7 @@ int main()
     // Пример работы с плотным вектором
     DenseVector<double> denseVec1;
     denseVec1.set(0, 1.5);
-    denseVec1.set(3, 2);
+    denseVec1.set(3, 2.5);
     denseVec1.set(10, 3.5);
 
     DenseVector<double> denseVec2;

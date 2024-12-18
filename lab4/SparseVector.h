@@ -1,32 +1,42 @@
+// Защита от двойного включения заголовочного файла
 #ifndef SPARSEVECTOR_H
 #define SPARSEVECTOR_H
 
-#include <unordered_map>
-#include <iostream>
-#include <cmath>
-#include <algorithm>
-#include "Utilities.h"
+// Подключение стандартных библиотек
+#include <unordered_map> // Для использования std::unordered_map
+#include <iostream>      // Для использования std::cout и std::endl
+#include <cmath>         // Для использования std::pow
+#include <algorithm>     // Для использования std::max и std::min
+#include "Utilities.h"   // Для использования pair_hash
 
+// Определение шаблонного класса SparseVector
 template <typename T>
 class SparseVector
 {
 private:
-    std::unordered_map<size_t, T> elements; // Хранение индексов и значений
+    // Хранение индексов и значений
+    std::unordered_map<size_t, T> elements;
 
 public:
     // Конструкторы
+
+    // Конструктор по умолчанию
     SparseVector() = default;
+
+    // Конструктор копирования (по умолчанию)
     SparseVector(const SparseVector &other) = default;
 
     // Добавление или обновление элемента
     void set(size_t index, T value)
     {
+        // Если значение не равно нулю, добавляем или обновляем элемент
         if (value != T(0))
         {
             elements[index] = value;
         }
         else
         {
+            // Если значение равно нулю, удаляем элемент из вектора
             elements.erase(index);
         }
     }
@@ -34,15 +44,17 @@ public:
     // Получение элемента
     T get(size_t index) const
     {
+        // Ищем элемент в векторе
         auto it = elements.find(index);
         if (it != elements.end())
         {
             return it->second;
         }
+        // Если элемент не найден, возвращаем 0
         return T(0);
     }
 
-    // Перегрузка оператора +
+    // Перегрузка оператора + для сложения векторов
     SparseVector operator+(const SparseVector &other) const
     {
         SparseVector result = *this;
@@ -53,7 +65,7 @@ public:
         return result;
     }
 
-    // Перегрузка оператора -
+    // Перегрузка оператора - для вычитания векторов
     SparseVector operator-(const SparseVector &other) const
     {
         SparseVector result = *this;
@@ -64,7 +76,7 @@ public:
         return result;
     }
 
-    // Скалярное произведение
+    // Скалярное произведение векторов
     T dotProduct(const SparseVector &other) const
     {
         T result = T(0);
@@ -86,7 +98,7 @@ public:
         return result;
     }
 
-    // Умножение на скаляр
+    // Умножение вектора на скаляр
     SparseVector operator*(T scalar) const
     {
         SparseVector result;
@@ -97,7 +109,7 @@ public:
         return result;
     }
 
-    // Деление на скаляр
+    // Деление вектора на скаляр
     SparseVector operator/(T scalar) const
     {
         SparseVector result;
@@ -129,7 +141,7 @@ public:
         std::cout << std::endl;
     }
 
-    // Получение всех ненулевых элементов (для итерации)
+    // Получение всех ненулевых элементов для итерирования
     const std::unordered_map<size_t, T> &getElements() const
     {
         return elements;
@@ -147,4 +159,5 @@ public:
     }
 };
 
+// Конец защиты от двойного включения
 #endif

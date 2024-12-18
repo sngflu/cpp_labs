@@ -1,13 +1,16 @@
+// Защита от двойного включения заголовочного файла
 #ifndef SPARSEMATRIX_H
 #define SPARSEMATRIX_H
 
-#include <unordered_map>
-#include <utility>
-#include <iostream>
-#include <cmath>
-#include <vector>
-#include "Utilities.h"
+// Подключение стандартных библиотек
+#include <unordered_map> // Для использования std::unordered_map
+#include <utility>       // Для использования std::pair
+#include <iostream>      // Для использования std::cout и std::endl
+#include <cmath>         // Для использования std::abs и std::pow
+#include <vector>        // Для использования std::vector
+#include "Utilities.h"   // Для использования pair_hash
 
+// Определение шаблонного класса SparseMatrix
 template <typename T>
 class SparseMatrix
 {
@@ -19,7 +22,11 @@ private:
 
 public:
     // Конструкторы
+
+    // Конструктор по умолчанию, инициализирует матрицу с заданными размерами
     SparseMatrix(size_t rows = 0, size_t cols = 0) : rows(rows), cols(cols) {}
+
+    // Конструктор копирования
     SparseMatrix(const SparseMatrix &other) = default;
 
     // Установка размеров матрицы
@@ -32,12 +39,14 @@ public:
     // Добавление или обновление элемента
     void set(size_t row, size_t col, T value)
     {
+        // Если значение не равно нулю, добавляем или обновляем элемент
         if (value != T(0))
         {
             elements[{row, col}] = value;
         }
         else
         {
+            // Если значение равно нулю, удаляем элемент из матрицы
             elements.erase({row, col});
         }
     }
@@ -45,15 +54,17 @@ public:
     // Получение элемента
     T get(size_t row, size_t col) const
     {
+        // Ищем элемент в матрице
         auto it = elements.find({row, col});
         if (it != elements.end())
         {
             return it->second;
         }
+        // Если элемент не найден, возвращаем 0
         return T(0);
     }
 
-    // Перегрузка оператора +
+    // Перегрузка оператора + для сложения матриц
     SparseMatrix operator+(const SparseMatrix &other) const
     {
         SparseMatrix result = *this;
@@ -66,7 +77,7 @@ public:
         return result;
     }
 
-    // Перегрузка оператора -
+    // Перегрузка оператора - для вычитания матриц
     SparseMatrix operator-(const SparseMatrix &other) const
     {
         SparseMatrix result = *this;
@@ -93,6 +104,7 @@ public:
     // Умножение матриц
     SparseMatrix operator*(const SparseMatrix &other) const
     {
+        // Проверка на совместимость размеров матриц для умножения
         if (cols != other.rows)
         {
             throw std::invalid_argument("Некорректные размеры матриц для умножения.");
@@ -168,9 +180,10 @@ public:
         return result;
     }
 
-    // Обращение матрицы (только для квадратных матриц)
+    // Обращение матрицы
     SparseMatrix inverse() const
     {
+        // Проверка на квадратность матрицы
         if (rows != cols)
         {
             throw std::invalid_argument("Обращение возможно только для квадратных матриц.");
@@ -254,9 +267,10 @@ public:
         return inverseMatrix;
     }
 
-    // Возведение матрицы в целую степень
+    // Возведение матрицы степень
     SparseMatrix pow(int exponent) const
     {
+        // Проверка на квадратность матрицы
         if (rows != cols)
         {
             throw std::invalid_argument("Возведение в степень возможно только для квадратных матриц.");
@@ -285,10 +299,6 @@ public:
         return result;
     }
 
-    // Возведение матрицы в вещественную степень
-    // Замечание: Реализация через диагонализацию требует, чтобы матрица была диагонализируема.
-    // Для упрощения, здесь не реализуется. Можно использовать численные методы или библиотеки.
-
     // Вывод матрицы
     void print() const
     {
@@ -299,7 +309,7 @@ public:
         std::cout << std::endl;
     }
 
-    // Получение всех ненулевых элементов (для итерации)
+    // Получение всех ненулевых элементов для итерирования
     const std::unordered_map<std::pair<size_t, size_t>, T, pair_hash> &getElements() const
     {
         return elements;
@@ -329,4 +339,5 @@ public:
     }
 };
 
+// Конец защиты от двойного включения
 #endif
